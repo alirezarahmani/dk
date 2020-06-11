@@ -1,0 +1,30 @@
+{
+  "name": "digikala/test",
+  "authors": [{"name":"Alireza Rahmani Khalili", "email": "alirezarahmani@live.com"}],
+  "license": "MIT",
+  "description": "Digikala Supernova Framework",
+  "homepage": "https://github.com/digikala-supernova/supernova",
+  "require": {
+    "php": "7.4.6",
+    "ext-mysqlnd": "*",
+    "ext-json": "*",
+    "ext-intl": "*",
+    "ext-mbstring": "*",
+    "beberlei/assert": "^3.0",
+    "symfony/dependency-injection": "5.*",
+    "symfony/yaml": "5.*",
+    "symfony/http-foundation": "5.*",
+    "symfony/Http-Kernel": "5.*",
+    "symfony/event-dispatcher": "5.*",
+    "symfony/routing": "5.*",
+    "symfony/validator": "5.*",
+    "symfony/console": "5.*",
+    "symfony/finder": "5.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Digikala\\": "src/",
+      "Boot\\": "boot/"
+    }
+  }
+}

@@ -1,0 +1,5 @@
+mysql:
+  prod:
+    uri: mysql:host=mysql;port=3306;dbname=dk_prod
+    user: root
+    pass: root

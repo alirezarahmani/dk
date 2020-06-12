@@ -2,8 +2,8 @@
   "name": "digikala/test",
   "authors": [{"name":"Alireza Rahmani Khalili", "email": "alirezarahmani@live.com"}],
   "license": "MIT",
-  "description": "Digikala Supernova Framework",
-  "homepage": "https://github.com/digikala-supernova/supernova",
+  "description": "Digikala  Framework",
+  "homepage": "https://github.com/alirezarahmani/dk",
   "require": {
     "php": "7.4.7",
     "ext-mysqlnd": "*",

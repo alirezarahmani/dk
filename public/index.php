@@ -1,5 +1,4 @@
 <?php
-opcache_reset();
 require '/var/www/vendor/autoload.php';
 
 use Boot\Start;

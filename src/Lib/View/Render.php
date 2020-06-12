@@ -6,8 +6,16 @@ use Digikala\Repository\NonPersistence\NotificationInMemoryRepository;
 use Digikala\Services\MemcachedService;
 use Digikala\Storage\MemcachedCacheStorage;
 
+/**
+ * Class Render
+ * @package Digikala\Lib\View
+ */
 class Render
 {
+    /**
+     * @return string
+     * @throws \Assert\AssertionFailedException
+     */
     public function html()
     {
         $memcached = new MemcachedService();

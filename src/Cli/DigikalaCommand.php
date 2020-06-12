@@ -14,6 +14,10 @@ abstract class DigikalaCommand extends Command
      */
     protected Container $container;
 
+    /**
+     * DigikalaCommand constructor.
+     * @param Container $container
+     */
     public function __construct(Container $container)
     {
         parent::__construct(null);

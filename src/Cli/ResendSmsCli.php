@@ -17,6 +17,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ResendSmsCli extends DigikalaCommand
 {
+    /**
+     *
+     */
     protected function configure()
     {
         $this
@@ -24,6 +27,12 @@ class ResendSmsCli extends DigikalaCommand
             ->setDescription('resend unsent sms');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     * @throws \Assert\AssertionFailedException
+     */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var QueueService $queue */

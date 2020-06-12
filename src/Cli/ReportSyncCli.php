@@ -22,6 +22,12 @@ class ReportSyncCli extends DigikalaCommand
             ->setDescription('sync report');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     * @throws \Exception
+     */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var NotificationService $notification */

@@ -10,7 +10,7 @@ use Digikala\Services\MemcachedService;
  * Class MemcachedCacheStorage
  * @package Digikala\Storage
  */
-class MemcachedCacheStorage
+class MemcachedCacheStorage implements CacheStorageInterface
 {
     /**
      * @var MemcachedService

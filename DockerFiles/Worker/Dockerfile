@@ -55,11 +55,6 @@ ADD docker-entrypoint.sh /usr/bin/docker-entrypoint
 RUN chmod +x /usr/bin/docker-entrypoint
 RUN sed -i 's/^user  nginx;/user  www-data;/' /etc/nginx/nginx.conf
 
-RUN echo "apc.enable_cli=1" >> /etc/php/7.4/cli/php.ini
-RUN echo "opcache.validate_timestamps=0" >> /etc/php/7.4/fpm/conf.d/10-opcache.ini
-RUN echo "opcache.memory_consumption=128" >> /etc/php/7.4/fpm/conf.d/10-opcache.ini
-RUN echo "opcache.opcache.max_accelerated_files=100000" >> /etc/php/7.4/fpm/conf.d/10-opcache.ini
-RUN echo "apc.shm_size=128M" >> /etc/php/7.4/fpm/conf.d/20-apcu.ini
 RUN sed -i "s/\(max_execution_time *= *\).*/\1180/" /etc/php/7.4/fpm/php.ini
 RUN sed -i "s/\(upload_max_filesize *= *\).*/\1100M/" /etc/php/7.4/fpm/php.ini
 RUN sed -i "s/\(post_max_size *= *\).*/\1100M/" /etc/php/7.4/fpm/php.ini

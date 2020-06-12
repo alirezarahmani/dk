@@ -51,7 +51,7 @@ class Router
     private static function initRoutes()
     {
         $indexRoute = new Route(
-            '/jobs',
+            '/sms/send',
             ['_controller' => 'Digikala\\Controller\\Apiv1\\SmsController', '_method' => 'indexAction'],
             [],
             [],
@@ -60,7 +60,7 @@ class Router
             'GET'
         );
         $routes = new RouteCollection();
-        $routes->add('job_index', $indexRoute);
+        $routes->add('sms_index', $indexRoute);
         return $routes;
     }
 }

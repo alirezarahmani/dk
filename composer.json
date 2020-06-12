@@ -17,9 +17,11 @@
     "symfony/Http-Kernel": "5.*",
     "symfony/event-dispatcher": "5.*",
     "symfony/routing": "5.*",
+    "symfony/config": "5.*",
     "symfony/validator": "5.*",
     "symfony/console": "5.*",
-    "symfony/finder": "5.*"
+    "symfony/finder": "5.*",
+    "sergeytsalkov/meekrodb": "^2.3"
   },
   "autoload": {
     "psr-4": {

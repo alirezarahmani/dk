@@ -6,8 +6,15 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'DB' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
+    'DBHelper' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
+    'DBTransaction' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
     'JsonException' => $vendorDir . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
+    'MeekroDB' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
+    'MeekroDBEval' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
+    'MeekroDBException' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
     'Normalizer' => $vendorDir . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
     'Stringable' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
     'ValueError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
+    'WhereClause' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
 );

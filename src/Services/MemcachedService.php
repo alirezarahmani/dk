@@ -52,7 +52,7 @@ class MemcachedService
      */
     public function setExpire(string $key, $value, int $ttl): void
     {
-        if ($ttl > TimeService::MONTH) {
+        if ($ttl > 2592000) {
             throw new InvalidArgumentException("TTL too big: $ttl");
         }
         $this->executeCommand('set', [$key, $value, $ttl]);

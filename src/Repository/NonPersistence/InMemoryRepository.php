@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Digikala\Repositories\NonPersistence;
+namespace Digikala\Repository\NonPersistence;
 
 use Assert\Assertion;
 

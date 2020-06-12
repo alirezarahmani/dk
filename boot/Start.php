@@ -6,10 +6,14 @@ namespace Boot;
 
 use ArrayObject;
 use Assert\Assertion;
+use Digikala\Lib\Notifications\Sms;
+use Digikala\Repository\Persistence\NotificationRepository;
+use Digikala\Services\NotificationService;
+use Digikala\Services\QueueService;
+use Digikala\Services\RedisService;
 use Exception;
 use SplFileInfo;
 use Digikala\Services\MemcachedService;
-use Digikala\Services\TimeService;
 use Digikala\Storage\MemcachedCacheStorage;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,14 +23,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpKernel\HttpKernel;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -55,26 +53,9 @@ class Start
         }
     }
 
-    private function runHttp(Request $request): Response
+    private function runHttp(Request $request)
     {
-        if ($request->getSession() === null) {
-            /**
-             * @var Session $session
-             */
-            $session = self::$containerBuilder->get(SessionInterface::class);
-            $request->setSession($session);
-        }
-
         self::$containerBuilder->set('_request', $request);
-
-        /**
-         * @var HttpKernel $kernel
-         */
-        $kernel = self::$containerBuilder->get(KernelInterface::class);
-        $response = $kernel->handle($request);
-        $response->send();
-        $kernel->terminate($request, $response);
-        return $response;
     }
 
     private function runCli(InputInterface $input, OutputInterface $output): void
@@ -94,7 +75,7 @@ class Start
     private static function loadConsoleApplications(string $appPath): array
     {
         $classes = [];
-        $dir = $appPath . '/src/Infrastructure/Cli';
+        $dir = $appPath . '/src/Cli';
         if (!is_dir($dir)) {
             throw new \InvalidArgumentException('no valid directory');
         }
@@ -104,7 +85,7 @@ class Start
             /**
              * @var SplFileInfo $file
              */
-            $className = 'SocialNetwork\\Infrastructure\\Cli\\'.substr($file->getRelativePathname(), 0, -4);
+            $className = 'Digikala\\Cli\\'.substr($file->getRelativePathname(), 0, -4);
             $reflection = new \ReflectionClass($className);
             if ($reflection->isInstantiable()) {
                 $classes[] = $className;
@@ -125,15 +106,24 @@ class Start
             Assertion::file($configFile, ' the ' . $configFile . ' found.');
             $config = Yaml::parse(file_get_contents($configFile));
             $container = new ContainerBuilder(new ParameterBag());
-            $container->register(TimeService::class)->setPublic(true);
             $container->register(\PDO::class, \PDO::class)
-                ->addArgument($config['mysql']['uri'])
-                ->addArgument($config['mysql']['user'])
-                ->addArgument($config['mysql']['pass']);
-            $container->register(EventDispatcher::class)->setPublic(true);
+                ->addArgument($config['mysql']['prod']['uri'])
+                ->addArgument($config['mysql']['prod']['user'])
+                ->addArgument($config['mysql']['prod']['pass']);
             $container->register(MemcachedService::class)->setPublic(true);
+            $container->register(RedisService::class)->setPublic(true);
             $container->register(MemcachedCacheStorage::class)
                 ->addArgument(new Reference(MemcachedService::class))
+                ->setPublic(true);
+            $container->register(Sms::class)->setPublic(true);
+            $container->register(NotificationRepository::class)->setPublic(true);
+            $container->register(QueueService::class)
+                ->addArgument(new Reference(RedisService::class))
+                ->setPublic(true);
+            $container->register(NotificationService::class)
+                ->addArgument(new Reference(Sms::class))
+                ->addArgument(new Reference(NotificationRepository::class))
+                ->addArgument(new Reference(QueueService::class))
                 ->setPublic(true);
             $container->compile();
             file_put_contents($cachedContainerFile, (new PhpDumper($container))->dump(['class' => $compiledClassName]));
@@ -147,6 +137,8 @@ class Start
          */
         $container =  new $compiledClassName();
         $container->set(self::CONSOLE_APPLICATION, new ArrayObject(self::loadConsoleApplications(__DIR__ . '/../')));
+        $request = Request::createFromGlobals();
+        $container->set(Request::class, $request);
         return new self($container);
     }
 

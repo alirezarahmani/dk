@@ -20,7 +20,7 @@ class CacheIndex
         return $this->field;
     }
 
-    public function getKey(string $index, string $value)
+    public function getKey(string $index, $value)
     {
         return self::KEY_PREFIX . ':' . $index . ':' . $this->field . ':' . $value;
     }

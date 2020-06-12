@@ -27,7 +27,7 @@ in order to use, you need to follow:
 
 Final Consideration:
 ---
-this is just a test and of course needs thousand improvement and fixes, but it design as simple as possible. Any more complicated design with details we can talk about it: feel free to send Email: alirezaahmani@live.com
+this is just a test and of course needs thousand improvement and fixes, but it design as simple as possible. Any more complicated design with details we can talk about it: feel free to send Email: alirezarahmani@live.com
 
 SQL
 ---
@@ -50,4 +50,4 @@ INSERT INTO `notifications` (`id`,`mobile`,`server`,`port`,`synced`,`status`,`cr
 
 Not Working?
 ---
-feel free to send email, maybe something is missing alirezaahmani@live.com
+feel free to send email, maybe something is missing alirezarahmani@live.com

@@ -24,7 +24,7 @@ class ApiJsonResponse
                 'Data' => [],
                 'Message' => $errors
             ],
-            Response::HTTP_OK
+            Response::HTTP_BAD_REQUEST
         ))->send();
     }
 
@@ -39,7 +39,7 @@ class ApiJsonResponse
                 'Data' => $data,
                 'Message' => ''
             ],
-            Response::HTTP_BAD_REQUEST
+            Response::HTTP_OK
         ))->send();
     }
 }

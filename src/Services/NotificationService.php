@@ -86,8 +86,9 @@ class NotificationService
     {
         try {
             $result = $this->repository->find($id);
+            $result = $result[0];
             Assertion::notEmpty($result, $id . ' is not valid');
-            $this->notification->send($result['destination'], $result['body']);
+            $this->notification->send($result['mobile'], $result['body']);
             $result['status'] = NotificationRepository::SENT;
             $this->repository->store($result);
         } catch (NotificationFailedException | \InvalidArgumentException $e) {

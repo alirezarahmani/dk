@@ -22,11 +22,12 @@ class ReportSyncCli extends DigikalaCommand
             ->setDescription('sync report');
     }
 
-    public function execute(InputInterface $input, OutputInterface $output): void
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var NotificationService $notification */
         $repository = new NotificationRepository();
         $repository->report();
         $output->write('done');
+        return 1;
     }
 }

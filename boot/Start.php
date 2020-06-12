@@ -65,6 +65,9 @@ class Start
         /** @var Container $container */
         $container = self::$containerBuilder;
         $application->setCatchExceptions(false);
+        foreach ($container->get(self::CONSOLE_APPLICATION)['classes'] as $class) {
+            $application->add(new $class($container));
+        }
         try {
             $application->run($input, $output);
         } catch (Exception $e) {
@@ -104,12 +107,7 @@ class Start
         if (!is_file($cachedContainerFile)) {
             $configFile = __DIR__ . '/../config/setting.yml';
             Assertion::file($configFile, ' the ' . $configFile . ' found.');
-            $config = Yaml::parse(file_get_contents($configFile));
             $container = new ContainerBuilder(new ParameterBag());
-            $container->register(\PDO::class, \PDO::class)
-                ->addArgument($config['mysql']['prod']['uri'])
-                ->addArgument($config['mysql']['prod']['user'])
-                ->addArgument($config['mysql']['prod']['pass']);
             $container->register(MemcachedService::class)->setPublic(true);
             $container->register(RedisService::class)->setPublic(true);
             $container->register(MemcachedCacheStorage::class)

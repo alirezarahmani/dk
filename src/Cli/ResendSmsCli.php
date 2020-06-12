@@ -24,7 +24,7 @@ class ResendSmsCli extends DigikalaCommand
             ->setDescription('resend unsent sms');
     }
 
-    public function execute(InputInterface $input, OutputInterface $output): void
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var QueueService $queue */
         $queue = $this->container->get(QueueService::class);
@@ -32,8 +32,10 @@ class ResendSmsCli extends DigikalaCommand
         $notification = $this->container->get(NotificationService::class);
         $results = $queue->getAndRemove(NotificationRepository::QUEUE, 10);
         foreach ($results as $result) {
+            $output->write('resend : ' . $result['id']);
             $notification->resend($result['id']);
         }
         $output->write('done');
+        return 1;
     }
 }

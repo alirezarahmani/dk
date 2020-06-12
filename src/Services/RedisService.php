@@ -6,7 +6,7 @@ class RedisService
 {
     private string $name;
     private string $keyNamespace;
-    private \Redis $redis;
+    private $redis;
 
     public function __construct(string $poolName = 'test', string $keyNamespace = 'tests')
     {
@@ -33,9 +33,7 @@ class RedisService
             throw new \InvalidArgumentException('Redis name is not specified');
         }
         if ($this->redis === null) {
-            $supernovaSettings = $this->serviceSettings();
-            $settings = $supernovaSettings['redis'][$this->name];
-            preg_match('/(?P<protocol>\w+):\/\/(?P<host>[0-9a-z._]*):(?P<port>\d+)/', $settings['uri'], $matches);
+            preg_match('/(?P<protocol>\w+):\/\/(?P<host>[0-9a-z._]*):(?P<port>\d+)/', 'tcp://redis:6379', $matches);
             $this->redis = new \Redis();
             $this->redis->connect($matches['host'], $matches['port'], 2);
             $this->redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_IGBINARY);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Digikala\Repository\Persistence;
 
+use Boot\Start;
 use DB;
 use Digikala\Repository\NonPersistence\NotificationInMemoryRepository;
 use Digikala\Services\MemcachedService;
@@ -24,12 +25,14 @@ class NotificationRepository
 
     private NotificationInMemoryRepository $inMemory;
     private $memcached;
+    private \MeekroDB $db;
 
     public function __construct()
     {   /** @var CacheStorageInterface $cashStorage */
         $cashStorage = new MemcachedCacheStorage(new MemcachedService());
         $this->inMemory = new NotificationInMemoryRepository($cashStorage);
         $this->memcached = $cashStorage;
+        $this->db = new \MeekroDB('mysql', 'root', 'root', 'dk');
     }
 
     /**
@@ -48,9 +51,11 @@ class NotificationRepository
             'status' => $inputs['status'],
             //for now just default value
             'server' => '0.0.0.0',
-            'port'   => '80'
+            'port'   => '80',
+            'created_at' => new \DateTime()
         ];
-        $id = DB::insertId(self::TABLE, $data);
+        $this->db->insert(self::TABLE, $data);
+        $id = $this->db->insertId();
         $data['id'] = $id;
         $this->addToInMemory($data);
         return $id;
@@ -76,7 +81,7 @@ class NotificationRepository
             'created_at' => new \DateTime()
         ];
 
-        DB::update(self::TABLE, $data, "id=%s", $id);
+        $this->db->update(self::TABLE, $data, "id=%s", $id);
         $data['id'] = $id;
         $this->addToInMemory($data);
     }
@@ -87,7 +92,7 @@ class NotificationRepository
      */
     public function find($id)
     {
-        return DB::query("SELECT * FROM " . self::TABLE . "  WHERE id=%s", $id);
+        return $this->db->query("SELECT * FROM " . self::TABLE . "  WHERE id=%s", $id);
     }
 
     /**
@@ -96,7 +101,7 @@ class NotificationRepository
      */
     public function findByIds(array $ids)
     {
-        return DB::query("SELECT * FROM " . self::TABLE . "  WHERE id IN (%s)", implode(",", $ids));
+        return $this->db->query("SELECT * FROM " . self::TABLE . "  WHERE id IN (%s)", implode(",", $ids));
     }
 
     /**
@@ -116,13 +121,13 @@ class NotificationRepository
     public function report()
     {
         $ttl = 2592000;
-        $data =  DB::query("SELECT count(*) as countAll FROM " . self::TABLE );
-        $this->memcached->set(NotificationInMemoryRepository::ALL_MSG, $data['countAll'], $ttl);
-        $data =  DB::query("SELECT mobile FROM " . self::TABLE . " group by mobile order by count(mobile) limit 1,10 " );
+        $data =  $this->db->query("SELECT count(*) as countAll FROM " . self::TABLE );
+        $this->memcached->set(NotificationInMemoryRepository::ALL_MSG, $data[0]['countAll'], $ttl);
+        $data =  $this->db->query("SELECT mobile FROM " . self::TABLE . " group by mobile order by count(mobile) desc  limit 10" );
         $this->memcached->set(NotificationInMemoryRepository::TOP_TEN, $data, $ttl);
-        $data =  DB::query("SELECT * FROM " . self::TABLE . "  WHERE server=%s and port=%si", '0.0.0.0', '80');
+        $data =  $this->db->query("SELECT count(*) as c FROM " . self::TABLE . "  WHERE server=%s and port=%i", '0.0.0.0', '80');
         $this->memcached->set(NotificationInMemoryRepository::API_USAGE, $data, $ttl);
-        $data =  DB::query("SELECT * FROM " . self::TABLE . "  WHERE server=%s and port=%si and status=%se", '0.0.0.0', '80', self::FAILED);
-        $this->memcached->set(NotificationInMemoryRepository::API_USAGE, $data, $ttl);
+        $data =  $this->db->query("SELECT count(*) as c FROM " . self::TABLE . "  WHERE  status=%s", self::FAILED);
+        $this->memcached->set(NotificationInMemoryRepository::API_FAULT, $data, $ttl);
     }
 }

@@ -45,7 +45,6 @@ class MyCachedContainer extends Container
     public function getRemovedIds(): array
     {
         return [
-            'PDO' => true,
             'Psr\\Container\\ContainerInterface' => true,
             'Symfony\\Component\\DependencyInjection\\ContainerInterface' => true,
         ];

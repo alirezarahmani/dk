@@ -59,8 +59,18 @@ class Router
             [],
             'GET'
         );
+        $reportRoute = new Route(
+            '/',
+            ['_controller' => 'Digikala\\Controller\\ReportController', '_method' => 'indexAction'],
+            [],
+            [],
+            '',
+            [],
+            'GET'
+        );
         $routes = new RouteCollection();
         $routes->add('sms_index', $indexRoute);
+        $routes->add('report_index', $reportRoute);
         return $routes;
     }
 }

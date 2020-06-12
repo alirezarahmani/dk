@@ -5,7 +5,7 @@
   "description": "Digikala Supernova Framework",
   "homepage": "https://github.com/digikala-supernova/supernova",
   "require": {
-    "php": "7.4.6",
+    "php": "7.4.7",
     "ext-mysqlnd": "*",
     "ext-json": "*",
     "ext-intl": "*",
